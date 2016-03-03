@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>CQRS and Event Sourcing for dummies</title>
+
+		<meta name="description" content="CQRS and Event Sourcing for dummies">
+		<meta name="author" content="Felipe Fernández">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/simple.css" id="theme">
+
+		<!-- Code syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+				<section>
+					<h1>CQRS and Event Sourcing for dummies</h1>
+					<p>
+						<small>Created by <a href="http://felipefzdz.github.io">Felipe Fernández</a> / <a href="https://twitter.com/felipefzdz">@felipefzdz</a></small>
+					</p>
+				</section>
+
+				<section>
+					<h2>About Me</h2>
+					<h4>Felipe Fernández</h4>
+					<ul>
+						<li>Work as Software Craftsman for <a href="http://codurance.com">Codurance</a></li>
+						<li>Currently with <a href="http://crowdmix.me">Crowdmix</a></li>
+						<li><a href="http://codurance.com/blog/author/felipe-fern%C3%A1ndez"> Blog </a></li>
+						<li>Twitter: <a href="https://twitter.com/felipefzdz">@felipefzdz</a></li>
+					</ul>
+				</section>
+
+
+				<section>
+					<h2>About the talk</h2>
+					<ul style='list-style-type: none;'>
+						<li>1. Objectives</li>
+						<li>2. CQS</li>
+						<li>3. CQRS</li>
+						<li>4. Event Sourcing</li>
+						<li>5. Related Concepts</li>
+						<li>6. Conclusion</li>
+					</ul>
+				</section>
+
+				<section>
+				  <section>
+				    <h2>Objectives</h2>
+				    <ul>
+				      <li>Single Responsability Principle</li>
+				      <li>Scalability</li>
+				      <li>Model complex domains</li>
+				    </ul>
+				  </section>
+				</section>
+
+				<section>
+				  <section>
+				    <h2>CQS</h2>
+				    <ul>
+				      <li>Command-query separation. Created by Bertrand Meyer</li>
+				      <li>Rethinking CRUD/REST</li>
+				      <li>Rethinking Mock/Stub</li>
+				      <li>Achieving better SRP at method level</li>
+				    </ul>
+				  </section>
+				</section>
+
+				<section>
+				  <section>
+				    <h2>CQRS</h2>
+				    <ul>
+				      <li>Levels of split</li>
+				      <li>No split : PostsRepository</li>
+				      <li>Split at class level : PostsReader and PostsPersister</li>
+				      <li>Split at datastore level : Writes in RDBMS and Reads in NoSQL</li>
+				      <li>Split at deployable level : Write, read and materializer services.</li>
+				    </ul>
+				  </section>
+				</section>
+
+				<section>
+				  <section>
+				    <h2>EVENT SOURCING</h2>
+				    <ul>
+				      <li>Append instead of update/delete in the write side</li>
+				      <li>Command vs Event</li>
+				      <li>CreatePost vs PostCreated</li>
+				    </ul>
+				  </section>
+					<section>
+				    <h2>EVENT SOURCING BENEFITS</h2>
+				    <ul>
+							<li>Easy to create new views from scratch</li>
+				      <li>Audit</li>
+				      <li>Debugabble</li>
+							<li>Disaster Recovery</li>
+							<li>Unified log, same original datastore for OLAP and OLTP</li>
+				    </ul>
+				  </section>
+				</section>
+
+				<section>
+				  <section>
+				    <h2>RELATED CONCEPTS</h2>
+				    <ul>
+				      <li>Aggregates</li>
+				      <li>Microservices</li>
+				      <li>Devops</li>
+				      <li>Event Storming</li>
+				    </ul>
+				  </section>
+				  <section>
+				    <h2>Aggregates</h2>
+				    <ul>
+				      <li>Transactional Boundary</li>
+				      <li>Materialised from event store or write side store</li>
+				      <li>Command handler checks invariants of aggregates</li>
+							<li>Example: Total value of unpaid orders for a customer must not exceed that customer's credit limit</li>
+							<li>Customer credit and orders should be part of the same aggregate</li>
+							<li>Application or datastore locks. Race conditions</li>
+				    </ul>
+				  </section>
+				  <section>
+				    <h2>Microservices</h2>
+				    <ul>
+				      <li>Write, read and materialiser deployables</li>
+				      <li>Different scalability needs</li>
+				      <li>HTTP, Message queues... Different intercommunication protocols</li>
+				      <li>Lose type safety accross services</li>
+				    </ul>
+				  </section>
+				  <section>
+				    <h2>Devops</h2>
+				    <ul>
+				      <li>Infra/ops gets more complicated</li>
+				      <li>Spinning up a local environment is harder</li>
+				      <li>Smoke tests are harder too</li>
+				      <li>Devs and ops need to collaborate more in this context</li>
+				    </ul>
+				  </section>
+				</section>
+
+				<section>
+				  <section>
+				    <h2>Conclusion</h2>
+				    <ul>
+				      <li>Most sofisticated solution has a steep learning curve</li>
+				      <li>It scales really well</li>
+				      <li>Bring ubiquituous language to your system seamlessly</li>
+				      <li>Super fun, but harder</li>
+				    </ul>
+				  </section>
+				</section>
+
+
+				<section>
+					<h1>Thank you</h1>
+				</section>
+
+				<section>
+					<h1>Any questions?</h1>
+				</section>
+			</div>
+
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+
+			// Full list of configuration options available at:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+				// Optional reveal.js plugins
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true },
+					{ src: 'plugin/notes/notes.js', async: true }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>
